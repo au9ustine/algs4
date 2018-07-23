@@ -40,6 +40,10 @@ artifacts {
     archives javadocJar
 }
 
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
+
 publishing {
     publications {
         MyPublication(MavenPublication) {
