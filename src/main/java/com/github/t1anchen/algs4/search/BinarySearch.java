@@ -1,4 +1,4 @@
-package com.github.au9ustine.algs4.search;
+package com.github.t1anchen.algs4.search;
 
 import java.util.Arrays;
 

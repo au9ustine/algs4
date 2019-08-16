@@ -1,8 +1,6 @@
-package com.github.au9ustine.algs4.search;
+package com.github.t1anchen.algs4.search;
 
 import org.junit.Test;
-
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 

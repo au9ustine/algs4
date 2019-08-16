@@ -1,4 +1,4 @@
-package com.github.au9ustine.algs4.basic;
+package com.github.t1anchen.algs4.basic;
 
 import org.junit.Test;
 

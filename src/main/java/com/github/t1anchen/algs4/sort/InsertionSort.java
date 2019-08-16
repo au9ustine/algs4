@@ -1,4 +1,4 @@
-package com.github.au9ustine.algs4.sort;
+package com.github.t1anchen.algs4.sort;
 
 public class InsertionSort {
 
