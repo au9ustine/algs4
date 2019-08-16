@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
  *  <em>change-key</em>, <em>decrease-key</em>, and <em>increase-key</em>
  *  operations take logarithmic time.
  *  The <em>is-empty</em>, <em>size</em>, <em>max-index</em>, <em>max-key</em>,
- *  and <em>key-of</em> operations take constant time.
+ *  <em>contains</em>, and <em>key-of</em> operations take constant time.
  *  Construction takes time proportional to the specified capacity.
  *  <p>
  *  For additional documentation, see <a href="https://algs4.cs.princeton.edu/24pq">Section 2.4</a> of
@@ -143,15 +143,15 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      */
     public int delMax() {
         if (n == 0) throw new NoSuchElementException("Priority queue underflow");
-        int min = pq[1];
+        int max = pq[1];
         exch(1, n--);
         sink(1);
 
-        assert pq[n+1] == min;
-        qp[min] = -1;        // delete
-        keys[min] = null;    // to help with garbage collection
+        assert pq[n+1] == max;
+        qp[max] = -1;        // delete
+        keys[max] = null;    // to help with garbage collection
         pq[n+1] = -1;        // not needed
-        return min;
+        return max;
     }
 
     /**
