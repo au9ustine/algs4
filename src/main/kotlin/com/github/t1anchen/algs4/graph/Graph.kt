@@ -4,6 +4,7 @@ import com.github.t1anchen.algs4.utils.Bag
 import java.io.InputStream
 import java.lang.IllegalArgumentException
 import java.util.stream.Stream
+import kotlin.random.Random
 
 public class Graph {
     private val V: Int
@@ -16,5 +17,7 @@ public class Graph {
         this.V = V
         adj = Array(V) { Bag<Int>()}
     }
+
+    override fun toString(): String = adj.toString()
 
 }

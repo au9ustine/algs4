@@ -26,6 +26,8 @@ class Bag<T> : Iterable<T> {
         n++
     }
 
+    override fun toString(): String = this.toList().toString()
+
     override fun iterator(): Iterator<T> = LinkedIterator(first)
 
     private inner class LinkedIterator<T> : Iterator<T> {
