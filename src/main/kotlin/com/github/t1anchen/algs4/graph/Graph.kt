@@ -1,30 +1,44 @@
 package com.github.t1anchen.algs4.graph
 
-import com.github.t1anchen.algs4.utils.Bag
 import com.github.t1anchen.algs4.utils.In
+import com.github.t1anchen.algs4.utils.R
 
 class Graph {
-    val V: Int
+    val V: MutableList<Int> = mutableListOf()
     var E: Int = 0
-    val adj: Array<Bag<Int>>
+
+    // [2020-05-22T22:30:58+0800] 本来想尝试用范型，然而在进行CRUD操作时发现需要重写 put
+    // 方法。后重新尝试用 java 做了一遍范型，发现还是无法在List<T>中add(T)，因为 int 与 T
+    // 之间没有建立类型关系。所以从这次的教训来看，使用范型的抽象，虽然能保证类型一致，但是灵活
+    // 性上的 tradeoff 代价十分昂贵，仍然不如基于数学和数字的抽象
+    val adj: MutableMap<Int, MutableList<Int>> = mutableMapOf()
 
     constructor(V: Int) {
         if (V < 0)
-            throw IllegalArgumentException("Number of vertices must be nonnegative")
-        this.V = V
-        adj = Array(V) { Bag<Int>() }
+            throw IllegalArgumentException(
+                    R.str("errmsg.graph.negative_vertice")
+            )
+        this.V.clear()
+        (0 until V).forEach {
+            this.V.add(it)
+            adj[it] = mutableListOf()
+        }
     }
 
     constructor(stream: In) {
-        if (stream == null) throw IllegalArgumentException("argument is null")
         try {
-            this.V = stream.readInt()
-            if (V < 0) throw IllegalArgumentException("number of vertices in a Graph must be non-negative")
-            adj = Array<Bag<Int>>(V) { Bag() }
+            val totalV = stream.readInt()
+            if (totalV < 0) throw IllegalArgumentException(
+                    R.str("errmsg.graph.negative_vertice")
+            )
+            V.clear()
+            (0 until totalV).forEach { V.add(it) }
 
             val E: Int = stream.readInt();
-            if (E < 0) throw IllegalArgumentException("number of edges in a Graph must be non-negative")
-            (0 until E).forEach {
+            if (E < 0) throw IllegalArgumentException(
+                    R.str("errmsg.graph.negative_edges")
+            )
+            (0 until E).forEach { _ ->
                 val v = stream.readInt()
                 val w = stream.readInt()
                 validateVertex(v)
@@ -32,44 +46,52 @@ class Graph {
                 addEdge(v, w)
             }
         } catch (e: NoSuchElementException) {
-            throw IllegalArgumentException("invalid input format in Graph constructor", e)
+            throw IllegalArgumentException(
+                    "invalid input format in Graph constructor", e
+            )
         }
     }
 
     private fun validateVertex(v: Int) {
-        if (v < 0 || v >= V)
-            throw IllegalArgumentException("vertex $v is not between 0 and ${V - 1}")
+        if (v < 0 || v >= V.size)
+            throw IllegalArgumentException(
+                    "vertex $v is not between 0 and ${V - 1}"
+            )
     }
 
     fun addEdge(v: Int, w: Int) {
         validateVertex(v)
         validateVertex(w)
         E++;
-        adj[v].add(w)
-        adj[w].add(v)
+        adj.getOrPut(v, { mutableListOf() }).add(w)
+        adj.getOrPut(w, { mutableListOf() }).add(v)
     }
 
     fun adj(v: Int): Iterable<Int> {
         validateVertex(v)
-        return adj[v]
+        return adj.getOrDefault(v, mutableListOf())
     }
 
     fun degree(v: Int): Int {
         validateVertex(v)
-        return adj[v].size()
+        return adj.getOrDefault(v, mutableListOf()).size
     }
 
     override fun toString(): String {
         val lineSep = System.getProperty("line.separator")
 
-        // [2020-05-19T21:56:48+0800] Here use "$v:$..." instead of "$v: $..." because somehow the latter adds one extra
-        // space, which is not expected
-        return "$V vertices, $E edges$lineSep" +
-                adj.mapIndexed { v, adj_v ->
-                    """$v:${adj_v.fold(
-                            "", { acc, w -> "$acc $w" }
-                    )}"""
-                }.joinToString(lineSep)
+        // [2020-05-19T21:56:48+0800] Here use "$v:$..." instead of "$v: $..."
+        // because somehow the latter adds one extra space, which is not
+        // expected
+        val prefix = "${V.size} vertices, $E edges$lineSep"
+        val entries = adj.toSortedMap().map { (v, adj_v) ->
+                    "$v:${adj_v.fold(
+                            "",
+                            { acc, w -> "$acc $w" }
+                    )}"
+                }
+        val representable = entries.joinToString(lineSep)
+        return prefix + representable
     }
 
 }
