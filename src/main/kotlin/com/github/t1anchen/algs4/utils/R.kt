@@ -18,5 +18,6 @@ object R {
             ResourceBundle.getBundle("strings").getString(k)
     fun str(k: String, locale: Locale) =
             ResourceBundle.getBundle("strings", locale).getString(k)
+    fun newline(): String = System.getProperty("line.separator")
 }
 
