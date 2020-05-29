@@ -26,4 +26,14 @@ class GraphTest {
         |12: 9 11""".trimMargin()
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun deepCopy() {
+        val stream = In("/algs4-data/tinyG.txt")
+        val g = Graph(stream)
+        val gCopy = Graph(g)
+        assertEquals(g.E, gCopy.E)
+        assertEquals(g.V, gCopy.V)
+        assertEquals(g.adj, gCopy.adj)
+    }
 }

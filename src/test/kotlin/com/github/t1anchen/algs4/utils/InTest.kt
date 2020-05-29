@@ -1,5 +1,7 @@
 package com.github.t1anchen.algs4.utils
 
+import java.io.FileNotFoundException
+import java.io.InputStream
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -12,10 +14,15 @@ class InTest {
         // 2. getResource/getResourceAsSteam must start with "/" (aka absolute path)
         // 3. Do not get classLoader, it would be null
         // 4. src/test/resources is not necessary when testing in Intellij with gradle
-        val tinyGStream = this.javaClass.getResourceAsStream("/algs4-data/tinyG.txt")?.buffered()
-        val stream = In(tinyGStream)
-        for (i in 0..10) {
-            println(stream.readInt())
+        when(val x = this.javaClass.getResourceAsStream("/algs4-data/tinyG.txt")) {
+            null -> throw FileNotFoundException()
+            else -> {
+                val tinyGStream = x.buffered()
+                val stream = In(tinyGStream)
+                for (i in 0..10) {
+                    println(stream.readInt())
+                }
+            }
         }
     }
 }

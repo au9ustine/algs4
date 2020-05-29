@@ -2,6 +2,11 @@ package com.github.t1anchen.algs4.graph
 
 import com.github.t1anchen.algs4.utils.R
 
+/**
+ * Application
+ * - Study spread of STDs
+ * - Particle detection
+ */
 class ConnectedComponent {
     val verticeVisited: Array<Boolean>
     val idsOfCC: Array<Int>
@@ -15,7 +20,7 @@ class ConnectedComponent {
         idsOfCC = Array(g.V.size) { 0 }
         sizesOfCC = Array(g.V.size) { 0 }
 
-        for (v: UndirectedVertex in g.V) {
+        for (v: Vertex in g.V) {
             val vertexId = v.value
             if (!verticeVisited[vertexId]) {
                 dfs(g, v)
@@ -24,12 +29,12 @@ class ConnectedComponent {
         }
     }
 
-    fun dfs(g: Graph, v: UndirectedVertex) {
+    fun dfs(g: Graph, v: Vertex) {
         val vertexId = v.value
         verticeVisited[vertexId] = true
         idsOfCC[vertexId] = counted
         sizesOfCC[counted]++
-        for (w: UndirectedVertex in g.adj(v)) {
+        for (w: Vertex in g.adj(v)) {
             if (!verticeVisited[w.value]) {
                 dfs(g, w)
             }
@@ -37,17 +42,17 @@ class ConnectedComponent {
     }
 
     fun count(): Int = counted
-    fun size(v: UndirectedVertex): Int {
+    fun size(v: Vertex): Int {
         val vertexId = v.value
         return sizesOfCC[idsOfCC[vertexId]]
     }
 
     override fun toString(): String {
-        val components: Array<MutableList<UndirectedVertex>> = Array(this.counted) {
-            mutableListOf<UndirectedVertex>()
+        val components: Array<MutableList<Vertex>> = Array(this.counted) {
+            mutableListOf<Vertex>()
         }
         val header = "$counted components"
-        for (v: UndirectedVertex in g.V) {
+        for (v: Vertex in g.V) {
             val vertexId = v.value
             components[idsOfCC[vertexId]].add(v)
         }
