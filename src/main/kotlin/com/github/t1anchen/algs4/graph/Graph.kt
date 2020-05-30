@@ -4,7 +4,7 @@ import com.github.t1anchen.algs4.utils.In
 import com.github.t1anchen.algs4.utils.R
 
 class Graph {
-    val V: MutableList<Vertex> = mutableListOf()
+    val V: Int
     var E: Int = 0
 
     // [2020-05-22T22:30:58+0800] 本来想尝试用范型，然而在进行CRUD操作时发现需要重写 put
@@ -27,30 +27,27 @@ class Graph {
             throw IllegalArgumentException(
                     R.str("errmsg.graph.negative_vertice")
             )
-        this.V.clear()
+        this.V = V
         (0 until V).forEach {
-            val tmpV = Vertex(it, V)
-            this.V.add(tmpV)
-            adj[tmpV] = mutableListOf()
+            adj[Vertex(it, V)] = mutableListOf()
         }
     }
 
     constructor(stream: In) {
         try {
-            val totalV = stream.readInt()
-            if (totalV < 0) throw IllegalArgumentException(
+            val V = stream.readInt()
+            if (V < 0) throw IllegalArgumentException(
                     R.str("errmsg.graph.negative_vertice")
             )
-            V.clear()
-            (0 until totalV).forEach { V.add(Vertex(it, totalV)) }
+            this.V = V
 
             val E: Int = stream.readInt();
             if (E < 0) throw IllegalArgumentException(
                     R.str("errmsg.graph.negative_edges")
             )
             (0 until E).forEach { _ ->
-                val v = Vertex(stream.readInt(), totalV)
-                val w = Vertex(stream.readInt(), totalV)
+                val v = Vertex(stream.readInt(), V)
+                val w = Vertex(stream.readInt(), V)
                 addEdge(v, w)
             }
         } catch (e: NoSuchElementException) {
@@ -63,53 +60,39 @@ class Graph {
     // Deep copy constructor
     constructor(g: Graph) {
         this.E = g.E
-        this.V.clear()
-        this.V.addAll(g.V)
+        this.V = g.V
         this.adj.clear()
 
-        for (entry in g.adj.entries) {
-            val (vertexValue, vertexConnected) = entry
-            this.adj.getOrPut(vertexValue, { mutableListOf() }).addAll(vertexConnected)
+        // [2020-05-30T21:46:21+0800] 直接使用 putAll 或者 toMap 并不能够生成
+        // 深拷贝，而是生成了一个新的 Map 的对象，但是键值对的引用仍指向原对象
+        // 所以需要在生成新的 Map 的同时，对 Map 中所包含的键值对做 *递归地* 深拷贝
+        //
+        // [2020-05-30T22:02:48+0800]
+        // 对于复杂的对象（例如嵌套了十几个不同的引用类型的对象）递归手写深拷贝是不现实的，所以
+        // 一种比较方便但是可能性能会受损的方法是将其序列化后再还原
+        g.adj.forEach { (v, vAdj) ->
+            this.adj[Vertex(v)] = vAdj.map { Vertex(it) }.toMutableList()
         }
-    }
-
-    private fun validateVertex(v: Int) {
-        if (v < 0 || v >= this.V.size)
-            throw IllegalArgumentException(
-                    "vertex $v is not between 0 and ${this.V - 1}"
-            )
     }
 
     fun addEdge(v: Vertex, w: Vertex) {
         E++;
-        val vId = v.value
-        val wId = w.value
         adj.getOrPut(v, { mutableListOf() }).add(w)
         adj.getOrPut(w, { mutableListOf() }).add(v)
     }
 
-//    fun adj(v: Int): Iterable<Vertex> {
-//        validateVertex(v)
-//        return adj.getOrDefault(v, mutableListOf())
-//    }
-
-    fun adj(v: Vertex): Iterable<Vertex> = adj.getOrDefault(v, mutableListOf())
-
-
-//    fun degree(v: Int): Int {
-//        validateVertex(v)
-//        return adj.getOrDefault(v, mutableListOf()).size
-//    }
+    fun adj(v: Vertex): Iterable<Vertex> = adj[v] ?: mutableListOf()
 
     fun degree(v: Vertex): Int = this.adj.getOrDefault(v, mutableListOf()).size
+
+    fun V(): Iterable<Vertex> = adj.keys.sorted()
 
     override fun toString(): String {
         val lineSep = System.getProperty("line.separator")
 
-        // [2020-05-19T21:56:48+0800] Here use "$v:$..." instead of "$v: $..."
-        // because somehow the latter adds one extra space, which is not
-        // expected
-        val prefix = "${V.size} vertices, $E edges$lineSep"
+        // [2020-05-19T21:56:48+0800] Here it used "$v:$..." rather than "$v: $
+        // ..." as somehow the latter adds one unexpected space
+        val prefix = "$V vertices, $E edges$lineSep"
         val entries = adj.toSortedMap().map { (v, adj_v) ->
                     "$v:${adj_v.fold(
                             "",

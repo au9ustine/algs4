@@ -21,7 +21,7 @@ class BreadthFirstPaths : Paths {
     val distTo: MutableMap<Vertex, Int> = mutableMapOf()
 
     constructor(G: Graph, s: Vertex) {
-        for (v: Vertex in G.V) {
+        for (v: Vertex in G.V()) {
             distTo[v] = INFINITY
         }
         bfs(G, s)
@@ -29,7 +29,7 @@ class BreadthFirstPaths : Paths {
 
     fun bfs(G: Graph, s: Vertex) {
         val q = LinkedList<Vertex>()
-        for (v: Vertex in G.V) {
+        for (v: Vertex in G.V()) {
             distTo[v] = INFINITY
         }
         distTo[s] = 0
@@ -41,7 +41,7 @@ class BreadthFirstPaths : Paths {
             for (w: Vertex in G.adj(v)) {
                 if (w !in marked) {
                     edgeTo[w] = v
-                    distTo[w] = distTo[v]!! + 1
+                    distTo[v]?.let { distTo[w] = it + 1 }
                     marked.add(w)
                     q.add(w)
                 }

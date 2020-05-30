@@ -14,17 +14,17 @@ class DepthFirstPathsTest {
     fun hasPathTo() {
         val stream = In("/algs4-data/tinyG.txt")
         val g = Graph(stream)
-        val dfp = DepthFirstPaths(g, Vertex(3, g.V.size))
-        assertTrue(dfp.hasPathTo(Vertex(0, g.V.size)))
-        assertFalse(dfp.hasPathTo(Vertex(7, g.V.size)))
+        val dfp = DepthFirstPaths(g, Vertex(3, g.V))
+        assertTrue(dfp.hasPathTo(Vertex(0, g.V)))
+        assertFalse(dfp.hasPathTo(Vertex(7, g.V)))
     }
 
     @Test
     fun pathTo() {
         val stream = In("/algs4-data/tinyG.txt")
         val g = Graph(stream)
-        val dfp = DepthFirstPaths(g, Vertex(0, g.V.size))
-        val actual = dfp.pathTo(Vertex(3, g.V.size)).toString()
+        val dfp = DepthFirstPaths(g, Vertex(0, g.V))
+        val actual = dfp.pathTo(Vertex(3, g.V)).toString()
         val expected = "[0, 5, 4, 3]"
         assertEquals(expected, actual)
     }

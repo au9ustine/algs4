@@ -16,11 +16,11 @@ class ConnectedComponent {
 
     constructor(g: Graph) {
         this.g = g
-        verticeVisited = Array(g.V.size) { false }
-        idsOfCC = Array(g.V.size) { 0 }
-        sizesOfCC = Array(g.V.size) { 0 }
+        verticeVisited = Array(g.V) { false }
+        idsOfCC = Array(g.V) { 0 }
+        sizesOfCC = Array(g.V) { 0 }
 
-        for (v: Vertex in g.V) {
+        for (v: Vertex in g.V()) {
             val vertexId = v.value
             if (!verticeVisited[vertexId]) {
                 dfs(g, v)
@@ -52,7 +52,7 @@ class ConnectedComponent {
             mutableListOf<Vertex>()
         }
         val header = "$counted components"
-        for (v: Vertex in g.V) {
+        for (v: Vertex in g.V()) {
             val vertexId = v.value
             components[idsOfCC[vertexId]].add(v)
         }

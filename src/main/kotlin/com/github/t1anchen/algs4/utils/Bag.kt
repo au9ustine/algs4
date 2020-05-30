@@ -39,12 +39,16 @@ class Bag<T> : Iterable<T> {
 
         override fun hasNext(): Boolean = current != null
 
-        override fun next(): T {
-            if (!hasNext()) throw NoSuchElementException()
-            val item: T = current!!.item
-            current = current!!.next
-            return item
-        }
+        override fun next(): T =
+            when(val c = current) {
+                null -> throw NoSuchElementException()
+                else -> {
+                    val item: T = c.item
+                    current = c.next
+                    item
+                }
+            }
+
     }
 }
 

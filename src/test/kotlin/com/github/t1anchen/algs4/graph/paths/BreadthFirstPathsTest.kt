@@ -13,8 +13,8 @@ class BreadthFirstPathsTest {
     fun pathTo() {
         val stream = In("/algs4-data/tinyG.txt")
         val g = Graph(stream)
-        val bfp = BreadthFirstPaths(g, Vertex(0, g.V.size))
-        val actual = bfp.pathTo(Vertex(3, g.V.size)).toString()
+        val bfp = BreadthFirstPaths(g, Vertex(0, g.V))
+        val actual = bfp.pathTo(Vertex(3, g.V)).toString()
         val expected = "[0, 5, 3]"
         assertEquals(expected, actual)
     }

@@ -1,8 +1,9 @@
 package com.github.t1anchen.algs4.graph
 
+import java.io.Serializable
 import java.lang.IllegalArgumentException
 
-class Vertex : Comparable<Vertex> {
+class Vertex : Comparable<Vertex>, Cloneable, Serializable {
 
     val value: Int
 
@@ -14,6 +15,14 @@ class Vertex : Comparable<Vertex> {
             )
             else -> this.value = value
         }
+    }
+
+    constructor(v: Vertex) {
+        this.value = v.value
+    }
+
+    override fun clone(): Any {
+        return Vertex(this)
     }
 
     override fun equals(other: Any?): Boolean =
