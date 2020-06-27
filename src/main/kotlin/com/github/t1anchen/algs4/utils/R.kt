@@ -1,5 +1,6 @@
 package com.github.t1anchen.algs4.utils
 
+import java.lang.IllegalArgumentException
 import java.util.*
 
 object R {
@@ -19,5 +20,7 @@ object R {
     fun str(k: String, locale: Locale) =
             ResourceBundle.getBundle("strings", locale).getString(k)
     fun newline(): String = System.getProperty("line.separator")
+
+
 }
 
